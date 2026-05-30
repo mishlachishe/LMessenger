@@ -59,7 +59,6 @@ fun SearchScreen(
 				.fillMaxSize()
 				.padding(padding)
 		) {
-			// Поисковая строка
 			Row(
 				modifier = Modifier
 					.fillMaxWidth()
@@ -88,7 +87,7 @@ fun SearchScreen(
 					keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
 					keyboardActions = KeyboardActions(
 						onSearch = {
-							viewModel.search()
+							viewModel.search(query)
 							viewModel.addToHistory(query)
 							focusManager.clearFocus()
 						}
@@ -101,7 +100,7 @@ fun SearchScreen(
 					history = history,
 					onItemClick = { item ->
 						viewModel.onQueryChange(item)
-						viewModel.search()
+						viewModel.search(item)
 						viewModel.addToHistory(item)
 						focusManager.clearFocus()
 					},
@@ -118,7 +117,7 @@ fun SearchScreen(
 				}
 				error != null -> ErrorPlaceholder(
 					message = error!!,
-					onRetry = { viewModel.search() }
+					onRetry = { viewModel.search(query) }
 				)
 				query.isNotEmpty() && users.isEmpty() && !isLoading -> EmptyPlaceholder()
 				users.isNotEmpty() -> LazyColumn {

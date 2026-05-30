@@ -55,8 +55,8 @@ fun CreateGroupScreen(
 			TextField(
 				value = userIdInput,
 				onValueChange = { userIdInput = it },
-				label = { Text("Ники участников через запятую") },
-				placeholder = { Text("alex, @maria") },
+				label = { Text("Имена участников через запятую") },
+				placeholder = { Text("1, 2, 3") },
 				modifier = Modifier.fillMaxWidth()
 			)
 			Spacer(modifier = Modifier.height(16.dp))

@@ -1,5 +1,6 @@
 package ru.mishlachok.LMessageClient.presentation.screens.search
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -36,7 +37,7 @@ class SearchViewModel @Inject constructor(
 		query = newQuery
 	}
 
-	fun search() {
+	fun search(query: String) {
 		if (query.isBlank()) return
 		viewModelScope.launch {
 			isLoading = true
@@ -44,7 +45,7 @@ class SearchViewModel @Inject constructor(
 			searchUsersUseCase(query)
 				.onSuccess { users = it }
 				.onFailure { e ->
-					error = e.message ?: "Не удалось выполнить поиск"
+					error = e.message ?: "Ошибка"
 					users = emptyList()
 				}
 			isLoading = false
