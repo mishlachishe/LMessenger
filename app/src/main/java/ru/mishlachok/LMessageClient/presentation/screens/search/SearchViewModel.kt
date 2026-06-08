@@ -1,14 +1,14 @@
 package ru.mishlachok.LMessageClient.presentation.screens.search
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ru.mishlachok.LMessageClient.data.datastore.SearchHistoryStorage
 import ru.mishlachok.LMessageClient.domain.model.User
@@ -32,9 +32,31 @@ class SearchViewModel @Inject constructor(
 		private set
 	var error by mutableStateOf<String?>(null)
 		private set
-	val history: Flow<List<String>> = searchHistoryStorage.historyFlow
+
+	private val _history = MutableStateFlow<List<String>>(emptyList())
+	val history: StateFlow<List<String>> = _history.asStateFlow()
+
+	private var searchJob: Job? = null
+
+	init {
+		viewModelScope.launch {
+			searchHistoryStorage.historyFlow.collect { list ->
+				_history.value = list
+			}
+		}
+	}
+
 	fun onQueryChange(newQuery: String) {
 		query = newQuery
+		searchJob?.cancel()
+		if (newQuery.isBlank()) {
+			users = emptyList()
+			return
+		}
+		searchJob = viewModelScope.launch {
+			delay(300)
+			search(newQuery)
+		}
 	}
 
 	fun search(query: String) {
@@ -59,12 +81,15 @@ class SearchViewModel @Inject constructor(
 	}
 
 	fun clearHistory() {
-		viewModelScope.launch { searchHistoryStorage.clearHistory() }
+		viewModelScope.launch {
+			searchHistoryStorage.clearHistory()
+			_history.value = emptyList()
+		}
 	}
 
-	fun createChat(userId: Long) {
+	fun createChat(userLogin: String) {
 		viewModelScope.launch {
-			createDirectChatUseCase(userId)
+			createDirectChatUseCase(userLogin)
 		}
 	}
 }

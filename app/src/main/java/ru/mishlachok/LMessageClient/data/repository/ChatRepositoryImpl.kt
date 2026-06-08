@@ -25,20 +25,37 @@ class ChatRepositoryImpl @Inject constructor(
 		Result.success(chat.toDomain())
 	} catch (e: Exception) { Result.failure(e) }
 
-	override suspend fun createGroupChat(name: String, memberIds: List<Long>): Result<Chat> = try {
+	/*override suspend fun createGroupChat(name: String, memberIds: List<Long>): Result<Chat> = try {
 		val chat: ChatDto = api.post("/api/chats/group", CreateGroupRequest(name, memberIds))
 		Result.success(chat.toDomain())
-	} catch (e: Exception) { Result.failure(e) }
-
-	override suspend fun createDirectChat(userId: Long): Result<Chat> = try {
-		val chat: ChatDto = api.post("/api/chats/direct", DirectChatRequest(userId))
+	} catch (e: Exception) { Result.failure(e) }*/
+	override suspend fun createGroupChat(name: String, memberLogins: List<String>): Result<Chat> = try {
+		val chat: ChatDto = api.post("/api/chats/group", CreateGroupRequest(name, memberLogins))
 		Result.success(chat.toDomain())
 	} catch (e: Exception) { Result.failure(e) }
 
-	override suspend fun addMember(chatId: Long, userId: Long): Result<Boolean> = try {
+	/*override suspend fun createDirectChat(userId: Long): Result<Chat> = try {
+		val chat: ChatDto = api.post("/api/chats/direct", DirectChatRequest(userId))
+		Result.success(chat.toDomain())
+	} catch (e: Exception) { Result.failure(e) }*/
+	override suspend fun createDirectChat(userLogin: String): Result<Chat> = try {
+		val chat: ChatDto = api.post("/api/chats/direct", DirectChatRequest(userLogin))
+		Result.success(chat.toDomain())
+	} catch (e: Exception) { Result.failure(e) }
+
+	/*override suspend fun addMember(chatId: Long, userId: Long): Result<Boolean> = try {
 		val response: AddMemberResponse = api.post("/api/chats/$chatId/members", AddMemberRequest(userId))
 		Result.success(response.success)
-	} catch (e: Exception) { Result.failure(e) }
+	} catch (e: Exception) { Result.failure(e) }*/
+	override suspend fun addMember(chatId: Long, userLogin: String): Result<Boolean> = try {
+		val response: AddMemberResponse = api.post(
+			"/api/chats/$chatId/members",
+			AddMemberRequest(userLogin)
+		)
+		Result.success(response.success)
+	} catch (e: Exception) {
+		Result.failure(e)
+	}
 
 	override suspend fun deleteChat(chatId: Long): Result<Boolean> = try {
 		val response: Map<String, Boolean> = api.delete("/api/chats/$chatId")

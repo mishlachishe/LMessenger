@@ -63,9 +63,9 @@ class ChatsViewModel @Inject constructor(
 		}
 	}
 
-	fun createDirectChat(userId: Long) {
+	fun createDirectChat(userLogin: String) {
 		viewModelScope.launch {
-			createDirectChatUseCase(userId)
+			createDirectChatUseCase(userLogin)
 				.onSuccess { newChat ->
 					_chats.update { currentList ->
 						if (currentList.none { it.id == newChat.id }) {
@@ -79,9 +79,9 @@ class ChatsViewModel @Inject constructor(
 		}
 	}
 
-	fun createGroupChat(name: String, memberIds: List<Long>) {
+	fun createGroupChat(name: String, memberLogins: List<String>) {
 		viewModelScope.launch {
-			createGroupChatUseCase(name, memberIds)
+			createGroupChatUseCase(name, memberLogins)
 				.onSuccess { newChat ->
 					_chats.update { currentList ->
 						if (currentList.none { it.id == newChat.id }) {

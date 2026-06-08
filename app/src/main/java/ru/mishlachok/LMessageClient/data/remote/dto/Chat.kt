@@ -12,12 +12,14 @@ data class ChatDto(
 )
 
 @Serializable
-data class CreateGroupRequest(val name: String, val members: List<Long>)
-
+//data class CreateGroupRequest(val name: String, val members: List<Long>)
+data class CreateGroupRequest(val name: String, val members: List<String>)
 @Serializable
-data class AddMemberRequest(val userId: Long)
+//data class AddMemberRequest(val userId: Long)
+data class AddMemberRequest(val userLogin: String)
 
 @Serializable
 data class AddMemberResponse(val success: Boolean)
 @Serializable
-data class DirectChatRequest(val userId: Long)
+//data class DirectChatRequest(val userId: Long)
+data class DirectChatRequest(val userLogin: String)

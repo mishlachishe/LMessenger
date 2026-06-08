@@ -19,7 +19,7 @@ fun CreateGroupScreen(
 	viewModel: CreateGroupViewModel = hiltViewModel()
 ) {
 	var groupName by remember { mutableStateOf("") }
-	var userIdInput by remember { mutableStateOf("") }
+	var userLoginsInput by remember { mutableStateOf("") }
 	val state by viewModel.createState.collectAsStateWithLifecycle()
 
 	LaunchedEffect(state) {
@@ -53,17 +53,17 @@ fun CreateGroupScreen(
 			)
 			Spacer(modifier = Modifier.height(8.dp))
 			TextField(
-				value = userIdInput,
-				onValueChange = { userIdInput = it },
+				value = userLoginsInput,
+				onValueChange = { userLoginsInput = it },
 				label = { Text("Имена участников через запятую") },
-				placeholder = { Text("1, 2, 3") },
+				placeholder = { Text("imya1,imya2,imya3") },
 				modifier = Modifier.fillMaxWidth()
 			)
 			Spacer(modifier = Modifier.height(16.dp))
 			Button(
 				onClick = {
-					val ids = userIdInput.split(",").mapNotNull { it.trim().toLongOrNull() }
-				viewModel.createGroup(groupName, ids)
+					val logins = userLoginsInput.split(",").mapNotNull { it.trim() }
+				viewModel.createGroup(groupName, logins)
 				},
 				modifier = Modifier.fillMaxWidth()
 			) {

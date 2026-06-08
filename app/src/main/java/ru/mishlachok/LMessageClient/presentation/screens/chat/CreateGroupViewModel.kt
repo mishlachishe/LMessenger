@@ -16,14 +16,14 @@ class CreateGroupViewModel @Inject constructor(
 	private val _createState = MutableStateFlow<CreateGroupState>(CreateGroupState.Idle)
 	val createState: StateFlow<CreateGroupState> = _createState
 
-	fun createGroup(name: String, memberIds: List<Long>) {
+	fun createGroup(name: String, memberLogins: List<String>) {
 		if (name.isBlank()) {
 			_createState.value = CreateGroupState.Error("Введите название группы")
 			return
 		}
 		viewModelScope.launch {
 			_createState.value = CreateGroupState.Loading
-			createGroupChatUseCase(name, memberIds)
+			createGroupChatUseCase(name, memberLogins)
 				.onSuccess { _createState.value = CreateGroupState.Success }
 				.onFailure { _createState.value = CreateGroupState.Error(it.message ?: "Error") }
 		}

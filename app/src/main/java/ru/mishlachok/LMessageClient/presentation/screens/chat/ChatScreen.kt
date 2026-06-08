@@ -31,7 +31,8 @@ fun ChatsScreen(
 	val chats by viewModel.chats.collectAsStateWithLifecycle()
 	val errorMessage by viewModel.error.collectAsStateWithLifecycle()
 	var showDirectChatDialog by remember { mutableStateOf(false) }
-	var directUserId by remember { mutableStateOf("") }
+	//var directUserId by remember { mutableStateOf("") }
+	var directUserLogin by remember { mutableStateOf("") }
 	val snackbarHostState = remember { SnackbarHostState() }
 	val currentUserId by viewModel.currentUserId.collectAsStateWithLifecycle()
 
@@ -66,30 +67,19 @@ fun ChatsScreen(
 			title = { Text("Новый личный чат") },
 			text = {
 				TextField(
-					value = directUserId,
-					onValueChange = { directUserId = it },
-					label = { Text("ID пользователя") },
+					value = directUserLogin,
+					onValueChange = { directUserLogin = it },
+					label = { Text("Ник пользователя") },
 					singleLine = true,
-					isError = directUserId.toLongOrNull() == null && directUserId.isNotBlank()
 				)
 			},
 			confirmButton = {
 				TextButton(onClick = {
-					val userId = directUserId.toLongOrNull()
-					when {
-						userId == null -> {
-							return@TextButton
-						}
-						userId == currentUserId -> {
-							viewModel.showError("Нельзя создать чат с самим собой")
-							return@TextButton
-						}
-						else -> {
-							viewModel.createDirectChat(userId)
-							showDirectChatDialog = false
-							directUserId = ""
-						}
-					}
+					val login = directUserLogin.trim().removePrefix("@")
+					if (login.isBlank()) return@TextButton
+					viewModel.createDirectChat(login)
+					showDirectChatDialog = false
+					directUserLogin = ""
 				}) { Text("Создать") }
 			},
 			dismissButton = {

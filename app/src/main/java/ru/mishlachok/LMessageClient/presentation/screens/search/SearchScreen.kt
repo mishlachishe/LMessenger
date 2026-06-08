@@ -87,7 +87,6 @@ fun SearchScreen(
 					keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
 					keyboardActions = KeyboardActions(
 						onSearch = {
-							viewModel.search(query)
 							viewModel.addToHistory(query)
 							focusManager.clearFocus()
 						}
@@ -122,7 +121,7 @@ fun SearchScreen(
 				query.isNotEmpty() && users.isEmpty() && !isLoading -> EmptyPlaceholder()
 				users.isNotEmpty() -> LazyColumn {
 					items(users) { user ->
-						UserListItem(user = user, onAddChat = { viewModel.createChat(user.id) })
+						UserListItem(user = user, onAddChat = { viewModel.createChat(user.login) })
 					}
 				}
 			}
